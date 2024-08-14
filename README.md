@@ -11,8 +11,8 @@ all random teams every round aram tournament
 
 # random team generators
 
-[6 players](6 players 3v3.html)
+[6 players]("6 players 3v3.html")
 
-[8 players](8 players 4v4.html)
+[8 players]("8 players 4v4.html")
 
 [10 players](10 players 5v5.html)
