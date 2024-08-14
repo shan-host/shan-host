@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shanaram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .matches {
+            margin-top: 20px;
+        }
+        .match {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>shanaram</h1>
+        <div class="form-group">
+            <label for="format">Select Player Format:</label>
+            <select id="format" onchange="updatePlayerInputs()">
+                <option value="4">4 Players</option>
+                <option value="8">8 Players</option>
+            </select>
+        </div>
+        <div id="playerInputs"></div>
+        <button class="btn" onclick="generateMatches()">Generate Matches</button>
+        <div class="matches" id="matches"></div>
+    </div>
+
+    <script>
+        function updatePlayerInputs() {
+            const format = document.getElementById('format').value;
+            const playerInputs = document.getElementById('playerInputs');
+            playerInputs.innerHTML = '';
+
+            for (let i = 1; i <= format; i++) {
+                const formGroup = document.createElement('div');
+                formGroup.classList.add('form-group');
+                formGroup.innerHTML = `
+                    <label for="player${i}">Player ${i}:</label>
+                    <input type="text" id="player${i}">
+                `;
+                playerInputs.appendChild(formGroup);
+            }
+        }
+
+        function generateMatches() {
+            const format = document.getElementById('format').value;
+            const players = [];
+
+            for (let i = 1; i <= format; i++) {
+                const player = document.getElementById(`player${i}`).value;
+                if (player) {
+                    players.push(player);
+                }
+            }
+
+            function generateWhist4Players(players) {
+                const rounds = [
+                    [players[3], players[0], players[1], players[2]],
+                    [players[3], players[1], players[2], players[0]],
+                    [players[3], players[2], players[0], players[1]]
+                ];
+                return rounds.map((round, index) => `Round ${index + 1}: ${round[0]}, ${round[1]} vs ${round[2]}, ${round[3]}`);
+            }
+
+            function generateWhist8Players(players) {
+                const rounds = [
+                    [players[0], players[1], players[2], players[3]],
+                    [players[0], players[2], players[1], players[3]],
+                    [players[0], players[3], players[1], players[2]],
+                    [players[1], players[2], players[0], players[3]],
+                    [players[1], players[3], players[0], players[2]],
+                    [players[2], players[3], players[0], players[1]],
+                    [players[4], players[5], players[6], players[7]],
+                    [players[4], players[6], players[5], players[7]],
+                    [players[4], players[7], players[5], players[6]],
+                    [players[5], players[6], players[4], players[7]],
+                    [players[5], players[7], players[4], players[6]],
+                    [players[6], players[7], players[4], players[5]],
+                    [players[0], players[4], players[1], players[5]],
+                    [players[0], players[5], players[1], players[4]]
+                ];
+                return rounds.map((round, index) => `Round ${index + 1}: ${round[0]}, ${round[1]} vs ${round[2]}, ${round[3]}`);
+            }
+
+            let matches = [];
+            if (format == 4) {
+                matches = generateWhist4Players(players);
+            } else if (format == 8) {
+                matches = generateWhist8Players(players);
+            }
+
+            const matchesContainer = document.getElementById('matches');
+            matchesContainer.innerHTML = '';
+            matches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.classList.add('match');
+                matchElement.innerText = match;
+                matchesContainer.appendChild(matchElement);
+            });
+        }
+
+        // Initialize player inputs for 4 players by default
+        updatePlayerInputs();
+    </script>
+</body>
+</html>

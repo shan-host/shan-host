@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4v4 Match Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .matches {
+            margin-top: 20px;
+        }
+        .match {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4v4 shanaram generator</h1>
+        <div class="form-group">
+            <label for="player1">Player 1:</label>
+            <input type="text" id="player1">
+        </div>
+        <div class="form-group">
+            <label for="player2">Player 2:</label>
+            <input type="text" id="player2">
+        </div>
+        <div class="form-group">
+            <label for="player3">Player 3:</label>
+            <input type="text" id="player3">
+        </div>
+        <div class="form-group">
+            <label for="player4">Player 4:</label>
+            <input type="text" id="player4">
+        </div>
+        <div class="form-group">
+            <label for="player5">Player 5:</label>
+            <input type="text" id="player5">
+        </div>
+        <div class="form-group">
+            <label for="player6">Player 6:</label>
+            <input type="text" id="player6">
+        </div>
+        <div class="form-group">
+            <label for="player7">Player 7:</label>
+            <input type="text" id="player7">
+        </div>
+        <div class="form-group">
+            <label for="player8">Player 8:</label>
+            <input type="text" id="player8">
+        </div>
+        <button class="btn" onclick="generateMatches()">Generate Matches</button>
+        <div class="matches" id="matches"></div>
+    </div>
+
+    <script>
+        function generateMatches() {
+            const players = [
+                document.getElementById('player1').value,
+                document.getElementById('player2').value,
+                document.getElementById('player3').value,
+                document.getElementById('player4').value,
+                document.getElementById('player5').value,
+                document.getElementById('player6').value,
+                document.getElementById('player7').value,
+                document.getElementById('player8').value
+            ];
+
+            function getCombinations(array, length) {
+                if (length === 1) {
+                    return array.map(element => [element]);
+                }
+
+                let combinations = [];
+                array.forEach((currentElement, index) => {
+                    const smallerCombinations = getCombinations(array.slice(index + 1), length - 1);
+                    smallerCombinations.forEach(smallerCombination => {
+                        combinations.push([currentElement, ...smallerCombination]);
+                    });
+                });
+
+                return combinations;
+            }
+
+            const combinations = getCombinations(players, 4);
+
+            function get4v4Matches(combinations) {
+                let matches = [];
+                for (let i = 0; i < combinations.length; i++) {
+                    const teamA = combinations[i];
+                    for (let j = i + 1; j < combinations.length; j++) {
+                        const teamB = combinations[j];
+                        if ([...new Set([...teamA, ...teamB])].length === 8) {
+                            matches.push(`Team A: ${teamA.join(", ")} vs Team B: ${teamB.join(", ")}`);
+                        }
+                    }
+                }
+                return matches;
+            }
+
+            const matches = get4v4Matches(combinations);
+
+            function getRandomMatches(matches, count) {
+                const randomMatches = [];
+                for (let i = 0; i < count; i++) {
+                    const randomIndex = Math.floor(Math.random() * matches.length);
+                    randomMatches.push(matches.splice(randomIndex, 1)[0]);
+                }
+                return randomMatches;
+            }
+
+            const selectedMatches = getRandomMatches([...matches], 5);
+
+            const matchesContainer = document.getElementById('matches');
+            matchesContainer.innerHTML = '';
+            selectedMatches.forEach((match, index) => {
+                const matchElement = document.createElement('div');
+                matchElement.classList.add('match');
+                matchElement.innerText = `Round ${index + 1}: ${match}`;
+                matchesContainer.appendChild(matchElement);
+            });
+        }
+    </script>
+</body>
+</html>
